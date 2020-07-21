@@ -64,7 +64,6 @@ bool is_game_over(uint8_t* board) {
   for (int i = 0; i < 9; i += 3) {
     if (board[i] == board[i + 1] && board[i + 1] == board[i + 2] &&
         board[i] != 0) {
-      cout << "HORIZONTAL WIN" << endl;
       return true;
     }
   }
@@ -72,7 +71,6 @@ bool is_game_over(uint8_t* board) {
   for (int i = 0; i < 3; i++) {
     if (board[i] == board[i + 3] && board[i + 3] == board[i + 6] &&
         board[i] != 0) {
-      cout << "VERTICAL WIN" << endl;
       return true;
     }
   }
@@ -80,57 +78,9 @@ bool is_game_over(uint8_t* board) {
   // diagonals
   if (board[0] == board[4] && board[4] == board[8] && board[0] != 0) {
     return true;
-    cout << "DIAG WIN" << endl;
   } else if (board[2] == board[4] && board[4] == board[6] && board[2] != 0) {
     return true;
-    cout << "DIAG WIN" << endl;
   }
-  // // 0 1 2
-  // // 3 4 5
-  // // 6 7 8
-  // uint8_t box1;
-  // uint8_t box2;
-  // uint8_t box3;
-  // // check diagonal wins
-  // box1 = board[0];
-  // box2 = board[4];
-  // box3 = board[8];
-  // if ((box1 == 1) && (box2 == 1) && (box3 = 1)) {
-  //   return true;  // X wins
-  // } else if ((box1 == 2) && (box2 == 2) && (box3 = 2)) {
-  //   return true;  // O wins
-  // }
-  // box1 = board[2];
-  // box2 = board[4];
-  // box3 = board[6];
-  // if ((box1 == 1) && (box2 == 1) && (box3 = 1)) {
-  //   return true;  // X wins
-  // } else if ((box1 == 2) && (box2 == 2) && (box3 = 2)) {
-  //   return true;  // O wins
-  // }
-  // // check vertical wins
-  // for (int i = 0; i < 9; i = i + 3) {
-  //   box1 = board[i];
-  //   box2 = board[i + 3];
-  //   box3 = board[i + 6];
-  //   if ((box1 == 1) && (box2 == 1) && (box3 = 1)) {
-  //     return true;  // X wins
-  //   } else if ((box1 == 2) && (box2 == 2) && (box3 = 2)) {
-  //     return true;  // O wins
-  //   }
-  // }
-  // // check horizontal wins
-  // for (int i = 0; i < 9; i = i + 3) {
-  //   box1 = board[i];
-  //   box2 = board[i + 1];
-  //   box3 = board[i + 2];
-  //   if ((box1 == 1) && (box2 == 1) && (box3 = 1)) {
-  //     return true;  // X wins
-  //   } else if (box1 == 2 && box2 == 2 && (box3 = 2)) {
-  //     return true;  // O wins
-  //   }
-  // }
-  // check if board is full
   bool empty = false;
   for (int i = 0; i < 9; i++) {
     if (board[i] == 0) {
@@ -144,9 +94,6 @@ bool is_game_over(uint8_t* board) {
 }
 
 void print_board(const uint8_t* board) {  //   A B C
-  // 1
-  // 2
-  // 3
   // 0 = empty
   // 1 = X
   // 2 = O
@@ -243,7 +190,6 @@ void run_AI(uint8_t& board, uint8_t player_symbol) {
   // 1. try to win
   // 2. block the player from winning
   // 3. pick whatever spot is left.
-  cout << "STARTING CHECKING" << endl;
   for (uint8_t i = 0; i < 9; i++) {
     uint8_t copy_board[9];
     memcpy(copy_board, &board, sizeof(uint8_t) * 9);
@@ -255,7 +201,6 @@ void run_AI(uint8_t& board, uint8_t player_symbol) {
       }
     }
   }
-  cout << "Checking block" << endl;
   for (uint8_t i = 0; i < 9; i++) {
     uint8_t copy_board[9];
     memcpy(copy_board, &board, sizeof(uint8_t) * 9);
@@ -267,7 +212,6 @@ void run_AI(uint8_t& board, uint8_t player_symbol) {
       }
     }
   }
-  cout << "Picking available cell" << endl;
   for (uint8_t i = 0; i < 9; i++) {
     if ((&board)[i] == 0) {
       (&board)[i] = ai_symbol;
@@ -284,21 +228,13 @@ int main() {
   // 2 = O
   uint8_t player_symbol = get_player_symbol();
   bool is_players_turn = get_player_plays_first();
-  print_board(board);
-  bool done = is_game_over(board);
-  cout << done << endl;
-  while (!done) {
+  while (!is_game_over(board)) {
     if (is_players_turn) {
       run_player_turn(*board, player_symbol);
-      cout << "DONE WITH PLAYERTURN" << endl;
-      is_players_turn = false;
     } else {
       run_AI(*board, player_symbol);
-      is_players_turn = true;
-      cout << "DONE WITH AI TURN" << endl;
     }
-    done = is_game_over(board);
-    cout << done << endl;
+    is_players_turn = !is_players_turn;
   }
   print_board(board);
 }
